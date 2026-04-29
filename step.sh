@@ -8,6 +8,7 @@ if [ -z "${app_path:-}" ] && [ -z "${ipa_path:-}" ]; then
 fi
 
 # --- Install CLI ---
+cli_version="${cli_version:-latest}"
 echo "Installing Semaloop CLI (${cli_version})..."
 INSTALL_DIR="$(mktemp -d)"
 
