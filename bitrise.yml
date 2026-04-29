@@ -1,0 +1,11 @@
+format_version: "11"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+workflows:
+  test:
+    steps:
+      - path::./:
+          title: "Semaloop - test"
+          inputs:
+            - api_key: "$SEMALOOP_API_KEY"
+            - app_path: "$TEST_APP_PATH"
