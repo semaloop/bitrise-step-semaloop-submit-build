@@ -2,9 +2,23 @@
 set -euo pipefail
 
 # --- Validate inputs ---
-if [ -z "${app_path:-}" ] && [ -z "${ipa_path:-}" ]; then
-  echo "Error: at least one of app_path or ipa_path must be provided."
+if [ -z "${app_path:-}" ] && [ -z "${test_bundle_path:-}" ] && [ -z "${ipa_path:-}" ]; then
+  echo "Error: at least one of app_path, test_bundle_path or ipa_path must be provided."
   exit 1
+fi
+
+# --- Resolve simulator .app from test bundle dir if needed ---
+if [ -z "${app_path:-}" ] && [ -n "${test_bundle_path:-}" ]; then
+  if [ ! -d "${test_bundle_path}" ]; then
+    echo "Error: test_bundle_path '${test_bundle_path}' is not a directory."
+    exit 1
+  fi
+  echo "Searching for .app inside: ${test_bundle_path}"
+  app_path=$(find "${test_bundle_path}" -name "*.app" -not -path "*.xctest*" -type d | head -1)
+  if [ -z "${app_path}" ]; then
+    echo "Error: no .app bundle found inside '${test_bundle_path}'."
+    exit 1
+  fi
 fi
 
 # --- Install CLI ---

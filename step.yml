@@ -76,7 +76,13 @@ inputs:
   - app_path: "$BITRISE_APP_PATH"
     opts:
       title: "Simulator .app path"
-      summary: "Path to the simulator build. Produced by the Xcode Build for Testing step."
+      summary: "Direct path to a simulator `.app` bundle. Takes precedence over `test_bundle_path`."
+      is_required: false
+
+  - test_bundle_path: "$BITRISE_TEST_BUNDLE_PATH"
+    opts:
+      title: "Test bundle directory"
+      summary: "Directory to search for a simulator `.app` bundle (e.g. the `BITRISE_TEST_BUNDLE_PATH` output of the Xcode Build for Testing step). Ignored if `app_path` is set."
       is_required: false
 
   - ipa_path: "$BITRISE_IPA_PATH"

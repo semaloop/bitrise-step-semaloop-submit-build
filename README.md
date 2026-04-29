@@ -8,18 +8,19 @@ A Bitrise step that submits an iOS build to [Semaloop](https://semaloop.com) and
 - Pushes a simulator `.app` build and/or a signed device `.ipa` build to Semaloop using `semaloop build push`.
 - Authenticates with your Semaloop API key.
 
-At least one of `app_path` or `ipa_path` must be provided.
+At least one of `app_path`, `test_bundle_path` or `ipa_path` must be provided.
 
 ## Inputs
 
-| Key         | Description                                                                                  | Default                | Required |
-|-------------|----------------------------------------------------------------------------------------------|------------------------|----------|
-| `api_key`   | Semaloop API key. Marked sensitive; store it as a secret env var on Bitrise.                 | `$SEMALOOP_API_KEY`    | Yes      |
-| `app_path`  | Path to the simulator `.app` build (produced by the *Xcode Build for Testing* step).         | `$BITRISE_APP_PATH`    | No\*     |
-| `ipa_path`  | Path to the signed `.ipa` file (produced by the *Xcode Archive & Export* step).              | `$BITRISE_IPA_PATH`    | No\*     |
-| `cli_version` | Version of the Semaloop CLI to install. Use `latest` or a specific release tag.            | `latest`               | No       |
+| Key                | Description                                                                                                                         | Default                       | Required |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|----------|
+| `api_key`          | Semaloop API key. Marked sensitive; store it as a secret env var on Bitrise.                                                        | `$SEMALOOP_API_KEY`           | Yes      |
+| `app_path`         | Direct path to a simulator `.app` bundle. Takes precedence over `test_bundle_path`.                                                 | `$BITRISE_APP_PATH`           | No\*     |
+| `test_bundle_path` | Directory to search for a simulator `.app` bundle (e.g. the output of the *Xcode Build for Testing* step). Ignored if `app_path` is set. | `$BITRISE_TEST_BUNDLE_PATH`   | No\*     |
+| `ipa_path`         | Path to the signed `.ipa` file (produced by the *Xcode Archive & Export* step).                                                     | `$BITRISE_IPA_PATH`           | No\*     |
+| `cli_version`      | Version of the Semaloop CLI to install. Use `latest` or a specific release tag.                                                     | `latest`                      | No       |
 
-\* At least one of `app_path` or `ipa_path` is required.
+\* At least one of `app_path`, `test_bundle_path` or `ipa_path` is required.
 
 ## Example usage
 
@@ -31,6 +32,16 @@ In your `bitrise.yml`:
     inputs:
     - api_key: $SEMALOOP_API_KEY
     - app_path: $BITRISE_APP_PATH
+```
+
+Or, when using the *Xcode Build for Testing* step (which outputs a directory rather than a `.app` directly):
+
+```yaml
+- git::https://github.com/semaloop/bitrise-step-semaloop-submit-build.git@main:
+    title: Submit build to Semaloop
+    inputs:
+    - api_key: $SEMALOOP_API_KEY
+    - test_bundle_path: $BITRISE_TEST_BUNDLE_PATH
 ```
 
 Or, for a device build:
