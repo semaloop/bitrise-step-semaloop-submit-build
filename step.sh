@@ -22,21 +22,16 @@ if [ -z "${app_path:-}" ] && [ -n "${test_bundle_path:-}" ]; then
 fi
 
 # --- Install CLI ---
-cli_version="${cli_version:-latest}"
-echo "Installing Semaloop CLI (${cli_version})..."
+echo "Installing Semaloop CLI (latest)..."
 INSTALL_DIR="$(mktemp -d)"
 
-if [ "$cli_version" = "latest" ]; then
-  DOWNLOAD_URL=$(curl -sf https://api.github.com/repos/semaloop/cli/releases/latest \
-    | grep "browser_download_url" \
-    | grep -i "Darwin_arm64" \
-    | cut -d '"' -f 4)
-else
-  DOWNLOAD_URL="https://github.com/semaloop/cli/releases/download/${cli_version}/cli_Darwin_arm64.tar.gz"
-fi
+DOWNLOAD_URL=$(curl -sf https://api.github.com/repos/semaloop/cli/releases/latest \
+  | grep "browser_download_url" \
+  | grep -i "Darwin_arm64" \
+  | cut -d '"' -f 4)
 
 if [ -z "$DOWNLOAD_URL" ]; then
-  echo "Error: could not resolve Semaloop CLI download URL for version '${cli_version}'."
+  echo "Error: could not resolve Semaloop CLI download URL."
   exit 1
 fi
 
